@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block menu %}
+    <a class="nav-link active" aria-current="page" href="{% url 'category_add_view' %}">Создать категорию</a>
+    <a class="nav-link active" aria-current="page" href="{% url 'categories_view' %}">Категории</a>
+{% endblock %}
+{% block content %}
+    <h1>Add Product</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Product</button>
+    </form>
+    <p><a href="{% url 'products_view' %}">Back to Products</a></p>
+{% endblock %}

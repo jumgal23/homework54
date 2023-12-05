@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block menu %}
+    <a class="nav-link active" aria-current="page" href="{% url 'category_add_view' %}">Создать категорию</a>
+    <a class="nav-link active" aria-current="page" href="{% url 'product_add_view' %}">Создать продукт</a>
+    <a class="nav-link active" aria-current="page" href="{% url 'category_add_view' %}">Создать задачу</a>
+{% endblock %}
+{% block content %}
+    <h1>Categories</h1>
+    <ul>
+        {% for typearticle in typearticles %}
+            <div>
+                <h4>{{ typearticle.title }} <a class="ms-5" href="{% url 'category_edit_view' pk=typearticle.id %}">Edit</a></h4>
+            </div>
+
+        {% endfor %}
+    </ul>
+{% endblock %}
