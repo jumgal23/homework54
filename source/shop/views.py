@@ -4,7 +4,7 @@ from .forms import ArticleForm, TypeArticleForm
 
 
 def products_view(request):
-    articles = Article.objects.all()
+    articles = Article.objects.filter(stock__gt=0).order_by('type', 'name')
     return render(request, 'products_view.html', {'articles': articles})
 
 
@@ -62,3 +62,12 @@ def product_edit_view(request, pk):
     else:
         form = ArticleForm(instance=article)
     return render(request, 'product_edit_view.html', {'form': form, 'article': article})
+
+
+def delete_view(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    if request.method == 'POST':
+        article.delete()
+        return redirect('products_view')
+
+    return render(request, 'delete.html', {'article': article})

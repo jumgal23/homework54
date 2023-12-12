@@ -11,7 +11,7 @@ class TypeArticleAdmin(admin.ModelAdmin):
 
 admin.site.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'description', 'type', 'created_at', 'price', 'image']
+    list_display = ['id', 'name', 'description', 'type', 'created_at', 'price', 'image', 'stock']
     list_display_links = ['id', 'name', 'description']
     search_fields = ['id', 'name']
     fields = ['name', 'description', 'created_at', 'detailed_description']

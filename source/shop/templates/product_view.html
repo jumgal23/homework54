@@ -10,7 +10,10 @@
     <p>Описание: {{ article.description }}</p>
     <p>Категория: {{ article.type }}</p>
     <p> Цена: {{ article.price }} $</p>
+    <p> Остаток: {{ article.stock }} шт</p>
     <p> Дата: {{ article.created_at }}</p>
     <p><a href="{% url 'product_edit_view' pk=article.id %}">Изменить</a></p>
+    <p><a href="{% url 'delete_view' pk=article.id %}">Delete</a></p>
     <p><a href="{% url 'products_view' %}">На главную</a></p>
 {% endblock %}
+
