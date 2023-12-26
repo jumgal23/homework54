@@ -5,17 +5,32 @@
     <a class="nav-link active" aria-current="page" href="{% url 'product_add_view' %}">Создать продукт</a>
     <a class="nav-link active" aria-current="page" href="{% url 'categories_view' %}">Категории</a>
 {% endblock %}
-{% block products_view %}
-    {% for article in articles %}
-                <div class="card my-3 ms-4 mt-5" style="width: 18rem;">
-                    <img src="{{ article.image }}" class="card-img-top" alt="img">
-                    <div class="card-body ">
-                        <h5 class="card-title">Название: {{ article.name }}</h5>
-                        <h6 class="card-subtitle mb-2 text-body-secondary">Категория: {{ article.type }}</h6>
-                        <p class="card-text">Цена: {{ article.price }} $</p>
-                        <p class="card-text">Цена: {{ article.stock }} $</p>
-                        <a href="{% url 'product_view' pk=article.id %}" class="card-link">Подробнее...</a>
+{% block content %}
+    <form method="get">
+        <input type="text" name="q" placeholder="Search projects" value="{{ request.GET.q }}">
+        <input type="submit" value="Search">
+    </form>
+
+    {% if is_paginated %}
+    	{% include 'pagination.html' %}
+    {% endif %}
+
+    <div class="row row-cols-3">
+        {% for article in articles %}
+            <div class="col">
+                    <div class="card my-3 ms-4 mt-5" style="width: 18rem;">
+                        <img src="{{ article.image }}" class="card-img-top" alt="img">
+                        <div class="card-body ">
+                            <h5 class="card-title">Название: {{ article.name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-body-secondary">Категория: {{ article.type }}</h6>
+                            <p class="card-text">Цена: {{ article.price }} $</p>
+                            <p class="card-text">Остаток: {{ article.stock }} $</p>
+                            <a href="{% url 'product_view' pk=article.id %}" class="card-link">Подробнее...</a>
+                        </div>
                     </div>
-                </div>
-    {% endfor %}
+            </div>
+            {% empty %}
+            <p>Нет статей</p>
+        {% endfor %}
+    </div>
 {% endblock %}
