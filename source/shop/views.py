@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Article, TypeArticle, CartItem
-from .forms import ArticleForm, TypeArticleForm, SimpleSearchForm
+from .models import Article, TypeArticle, CartItem, Order, OrderItem
+from .forms import ArticleForm, TypeArticleForm, SimpleSearchForm, CheckoutForm
 from django.views.generic import ListView, DetailView, CreateView,  UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 
 class ProductsListView(ListView):
@@ -96,7 +98,8 @@ def add_to_cart(request, pk):
             cart_item.quantity += 1
             cart_item.save()
 
-    return redirect('products_view')
+    referer = request.META.get('HTTP_REFERER')
+    return redirect(referer if referer else 'products_view')
 
 
 def cart_view(request):
@@ -111,5 +114,40 @@ def remove_from_cart(request, pk):
     article = get_object_or_404(Article, pk=pk)
     cart_item = get_object_or_404(CartItem, product=article)
     cart_item.delete()
+    return redirect('cart_view')
+
+@login_required
+def checkout(request):
+    user = request.user
+
+    if request.method == 'POST':
+        cart_items = CartItem.objects.filter(user=user)
+
+        name = request.POST.get('name')
+        address = request.POST.get('address')
+        phone = request.POST.get('phone')
+
+        if not cart_items.exists():
+            messages.error(request, 'Your cart is empty.')
+            return redirect('qwe')
+
+        order = Order.objects.create(
+            user=user,
+            name=name,
+            address=address,
+            phone=phone
+        )
+
+        for cart_item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                product=cart_item.product,
+                quantity=cart_item.quantity
+            )
+
+        cart_items.delete()
+        messages.success(request, 'Order placed successfully!')
+        return redirect('products_view')
+
     return redirect('cart_view')
 

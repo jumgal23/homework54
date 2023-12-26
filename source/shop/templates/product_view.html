@@ -3,6 +3,7 @@
     <a class="nav-link active" aria-current="page" href="{% url 'category_add_view' %}">Создать категорию</a>
     <a class="nav-link active" aria-current="page" href="{% url 'product_add_view' %}">Создать продукт</a>
     <a class="nav-link active" aria-current="page" href="{% url 'categories_view' %}">Категории</a>
+    <a class="nav-link active" aria-current="page" href="{% url 'cart_view' %}">Корзинка</a>
 {% endblock %}
 {% block content %}
     <img class="d-flex w-25 p-3 h-25 d-inline-block" src="{{ article.image }}" alt="{{ article.name }}">
@@ -16,4 +17,6 @@
     <p><a href="{% url 'delete_view' pk=article.id %}">Delete</a></p>
     <p><a href="{% url 'add_to_cart' pk=article.id %}">Add to Cart</a></p>
     <p><a href="{% url 'products_view' %}">На главную</a></p>
+
 {% endblock %}
+

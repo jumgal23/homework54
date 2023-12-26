@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 class TypeArticle(models.Model):
@@ -29,8 +30,31 @@ class Article(models.Model):
 
 
 class CartItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey('shop.Article', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f'{self.product.name} - {self.quantity} units in the cart'
+
+
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    address = models.CharField(max_length=255)
+    phone = models.CharField(max_length=20)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey('shop.Article', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f'{self.product.name} - {self.quantity} '
+
+
+
+
+

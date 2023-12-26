@@ -1,5 +1,5 @@
 from django.contrib import admin
-from shop.models import Article, TypeArticle
+from shop.models import Article, TypeArticle, Order, OrderItem
 
 
 admin.site.register(TypeArticle)
