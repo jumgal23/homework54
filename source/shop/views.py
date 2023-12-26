@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Article, TypeArticle
+from .models import Article, TypeArticle, CartItem
 from .forms import ArticleForm, TypeArticleForm, SimpleSearchForm
 from django.views.generic import ListView, DetailView, CreateView,  UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -25,19 +25,11 @@ class ProductsListView(ListView):
         return context
 
 
-# def products_view(request):
-#     articles = Article.objects.filter(stock__gt=0).order_by('type', 'name')
-#     return render(request, 'products_view.html', {'articles': articles})
-
 class ProductDetailView(DetailView):
     model = Article
     template_name = 'product_view.html'
     context_object_name = 'article'
 
-
-# def product_view(request, pk):
-#     article = get_object_or_404(Article, pk=pk)
-#     return render(request, 'product_view.html', {'article': article})
 
 
 def category_add_view(request):
@@ -58,16 +50,6 @@ class ProductCreateView(CreateView):
     def form_valid(self, form):
         product = form.save()
         return super().form_valid(form)
-
-# def product_add_view(request):
-#     if request.method == 'POST':
-#         form = ArticleForm(request.POST)
-#         if form.is_valid():
-#             product = form.save()
-#             return redirect(product.get_absolute_url())
-#     else:
-#         form = ArticleForm()
-#     return render(request, 'product_add_view.html', {'form': form})
 
 
 def categories_view(request):
@@ -97,27 +79,37 @@ class ProductUpdateView(UpdateView):
         product = form.save()
         return super().form_valid(form)
 
-# def product_edit_view(request, pk):
-#     article = get_object_or_404(Article, pk=pk)
-#     if request.method == 'POST':
-#         form = ArticleForm(request.POST, instance=article)
-#         if form.is_valid():
-#             product = form.save()
-#             return redirect(product.get_absolute_url())
-#     else:
-#         form = ArticleForm(instance=article)
-#     return render(request, 'product_edit_view.html', {'form': form, 'article': article})
-
 
 class ProductDeleteView(DeleteView):
     model = Article
     template_name = 'delete.html'
     success_url = reverse_lazy('products_view')
 
-# def delete_view(request, pk):
-#     article = get_object_or_404(Article, pk=pk)
-#     if request.method == 'POST':
-#         article.delete()
-#         return redirect('products_view')
-#
-#     return render(request, 'delete.html', {'article': article})
+
+def add_to_cart(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+
+    if article.stock > 0:
+        cart_item, created = CartItem.objects.get_or_create(product=article)
+
+        if cart_item.quantity < article.stock:
+            cart_item.quantity += 1
+            cart_item.save()
+
+    return redirect('products_view')
+
+
+def cart_view(request):
+    cart_items = CartItem.objects.all()
+    total_price = sum(item.product.price * item.quantity for item in cart_items)
+    return render(request, 'cart_view.html', {'cart_items': cart_items, 'total_price': total_price})
+
+
+
+# views.py
+def remove_from_cart(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    cart_item = get_object_or_404(CartItem, product=article)
+    cart_item.delete()
+    return redirect('cart_view')
+

@@ -4,6 +4,7 @@
     <a class="nav-link active" aria-current="page" href="{% url 'category_add_view' %}">Создать категорию</a>
     <a class="nav-link active" aria-current="page" href="{% url 'product_add_view' %}">Создать продукт</a>
     <a class="nav-link active" aria-current="page" href="{% url 'categories_view' %}">Категории</a>
+    <a class="nav-link active" aria-current="page" href="{% url 'cart_view' %}">Shopping Cart</a>
 {% endblock %}
 {% block content %}
     <form method="get">
@@ -26,6 +27,7 @@
                             <p class="card-text">Цена: {{ article.price }} $</p>
                             <p class="card-text">Остаток: {{ article.stock }} $</p>
                             <a href="{% url 'product_view' pk=article.id %}" class="card-link">Подробнее...</a>
+                            <a href="{% url 'add_to_cart' pk=article.id %}">Add to Cart</a>
                         </div>
                     </div>
             </div>

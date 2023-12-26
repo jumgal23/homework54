@@ -27,3 +27,10 @@ class Article(models.Model):
     def get_absolute_url(self):
         return reverse('product_view', args=[str(self.id)])
 
+
+class CartItem(models.Model):
+    product = models.ForeignKey('shop.Article', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f'{self.product.name} - {self.quantity} units in the cart'
